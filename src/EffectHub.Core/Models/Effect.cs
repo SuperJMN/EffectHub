@@ -9,6 +9,7 @@ public record Effect
     public string AuthorAlias { get; init; } = "Anonymous";
     public IReadOnlyList<string> Tags { get; init; } = [];
     public IReadOnlyList<UniformDefinition> Uniforms { get; init; } = [];
+    public IReadOnlyDictionary<string, double>? UniformValues { get; init; }
     public DateTimeOffset CreatedAt { get; init; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedAt { get; init; } = DateTimeOffset.UtcNow;
 }
