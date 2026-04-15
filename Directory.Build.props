@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <AvaloniaVersion>12.0.0</AvaloniaVersion>
+    <SkiaSharpVersion>3.119.3-preview.1.1</SkiaSharpVersion>
+    <EffectorVersion>0.8.0</EffectorVersion>
+  </PropertyGroup>
+</Project>

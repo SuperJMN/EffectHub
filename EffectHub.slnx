@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EffectHub.Core/EffectHub.Core.csproj" />
+    <Project Path="src/EffectHub.Storage.Local/EffectHub.Storage.Local.csproj" />
+    <Project Path="src/EffectHub/EffectHub.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EffectHub.Core.Tests/EffectHub.Core.Tests.csproj" />
+    <Project Path="tests/EffectHub.Storage.Tests/EffectHub.Storage.Tests.csproj" />
+  </Folder>
+</Solution>

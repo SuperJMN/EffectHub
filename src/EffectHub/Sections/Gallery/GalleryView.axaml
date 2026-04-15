@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:gallery="clr-namespace:EffectHub.Sections.Gallery"
+             xmlns:models="clr-namespace:EffectHub.Core.Models;assembly=EffectHub.Core"
+             x:Class="EffectHub.Sections.Gallery.GalleryView"
+             x:DataType="gallery:GalleryViewModel">
+
+    <DockPanel Margin="24">
+        <!-- Header -->
+        <StackPanel DockPanel.Dock="Top" Spacing="16" Margin="0,0,0,20">
+            <TextBlock Text="Shader Gallery" FontSize="28" FontWeight="Bold" />
+            <TextBox Watermark="Search effects..." Text="{Binding SearchText}" />
+        </StackPanel>
+
+        <!-- Effects grid -->
+        <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding Effects}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:Effect">
+                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                                CornerRadius="8"
+                                Padding="12"
+                                Margin="8"
+                                Width="240"
+                                MinHeight="180">
+                            <StackPanel Spacing="8">
+                                <!-- Preview placeholder -->
+                                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                                        CornerRadius="4"
+                                        Height="120">
+                                    <TextBlock Text="Preview"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Opacity="0.4" />
+                                </Border>
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" />
+                                <TextBlock Text="{Binding Description}"
+                                           MaxLines="2"
+                                           TextTrimming="CharacterEllipsis"
+                                           Opacity="0.7"
+                                           FontSize="12" />
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <PathIcon Data="{StaticResource mdi-account}" Width="12" Height="12" Opacity="0.5" />
+                                    <TextBlock Text="{Binding AuthorAlias}" FontSize="11" Opacity="0.5" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

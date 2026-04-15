@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:EffectHub"
+             xmlns:gallery="clr-namespace:EffectHub.Sections.Gallery"
+             xmlns:editor="clr-namespace:EffectHub.Sections.Editor"
+             xmlns:myEffects="clr-namespace:EffectHub.Sections.MyEffects"
+             x:Class="EffectHub.MainView"
+             x:DataType="local:MainViewModel">
+
+    <SplitView IsPaneOpen="True"
+               DisplayMode="CompactInline"
+               OpenPaneLength="220"
+               CompactPaneLength="48">
+
+        <SplitView.Pane>
+            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                <StackPanel Margin="0,8">
+                    <ListBox SelectedIndex="{Binding SelectedIndex}"
+                             Background="Transparent"
+                             Margin="4,0">
+                        <ListBoxItem>
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <PathIcon Data="{StaticResource mdi-view-grid}" Width="20" Height="20" />
+                                <TextBlock Text="Gallery" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <PathIcon Data="{StaticResource mdi-code-braces}" Width="20" Height="20" />
+                                <TextBlock Text="Editor" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <PathIcon Data="{StaticResource mdi-folder-account}" Width="20" Height="20" />
+                                <TextBlock Text="My Effects" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ListBoxItem>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+        </SplitView.Pane>
+
+        <SplitView.Content>
+            <Panel>
+                <gallery:GalleryView DataContext="{Binding Gallery}"
+                                     IsVisible="{Binding $parent[UserControl].((local:MainViewModel)DataContext).SelectedIndex, Converter={x:Static local:IndexConverters.IsZero}}" />
+                <editor:EditorView DataContext="{Binding Editor}"
+                                   IsVisible="{Binding $parent[UserControl].((local:MainViewModel)DataContext).SelectedIndex, Converter={x:Static local:IndexConverters.IsOne}}" />
+                <myEffects:MyEffectsView DataContext="{Binding MyEffects}"
+                                         IsVisible="{Binding $parent[UserControl].((local:MainViewModel)DataContext).SelectedIndex, Converter={x:Static local:IndexConverters.IsTwo}}" />
+            </Panel>
+        </SplitView.Content>
+    </SplitView>
+</UserControl>
