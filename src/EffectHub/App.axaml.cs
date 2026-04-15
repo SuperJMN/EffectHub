@@ -6,6 +6,7 @@ using EffectHub.Core.Services;
 using EffectHub.Sections.Editor;
 using EffectHub.Sections.Gallery;
 using EffectHub.Sections.MyEffects;
+using EffectHub.Services;
 using EffectHub.Storage.Local;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,6 +27,8 @@ public class App : Application
         services.AddSingleton<IEffectRepository>(repository);
         services.AddSingleton<IShaderCompiler, ShaderCompiler>();
         services.AddSingleton<IIdentityProvider, LocalIdentityProvider>();
+        services.AddSingleton<IEffectPackager, EffectPackager>();
+        services.AddSingleton<IFileDialogService, FileDialogService>();
 
         services.AddSingleton<GalleryViewModel>();
         services.AddSingleton<EditorViewModel>();

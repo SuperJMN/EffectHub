@@ -19,6 +19,8 @@ public partial class MainViewModel : ReactiveObject
         Gallery = gallery;
         Editor = editor;
         MyEffects = myEffects;
+
+        Gallery.EditEffectCallback = effect => NavigateToEditor(effect);
     }
 
     public void NavigateToEditor(Core.Models.Effect? effectToEdit = null)

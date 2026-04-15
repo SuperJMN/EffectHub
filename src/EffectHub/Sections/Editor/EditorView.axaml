@@ -3,7 +3,8 @@
              xmlns:editor="clr-namespace:EffectHub.Sections.Editor"
              xmlns:ae="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
              xmlns:b="clr-namespace:EffectHub.Behaviors"
-             xmlns:i="https://github.com/nickvdyck/xaml.behaviors.avalonia"
+             xmlns:preview="clr-namespace:EffectHub.Controls.EffectPreview"
+             xmlns:converters="clr-namespace:EffectHub.Converters"
              x:Class="EffectHub.Sections.Editor.EditorView"
              x:DataType="editor:EditorViewModel">
 
@@ -45,9 +46,9 @@
                            FontSize="13"
                            ShowLineNumbers="True"
                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                <i:Interaction.Behaviors>
+                <Interaction.Behaviors>
                     <b:TextEditorBindingBehavior Text="{Binding SkslCode}" />
-                </i:Interaction.Behaviors>
+                </Interaction.Behaviors>
             </ae:TextEditor>
         </DockPanel>
 
@@ -55,7 +56,13 @@
 
         <!-- Right panel: Preview + Uniforms -->
         <DockPanel Grid.Column="2">
-            <TextBlock DockPanel.Dock="Top" Text="Preview" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12" />
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="0,0,0,12">
+                <TextBlock Text="Preview" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <ComboBox ItemsSource="{Binding AvailableSurfaces}"
+                          SelectedItem="{Binding SelectedSurface}"
+                          MinWidth="150"
+                          VerticalAlignment="Center" />
+            </StackPanel>
 
             <!-- Uniforms panel -->
             <Border DockPanel.Dock="Bottom"
@@ -83,15 +90,12 @@
                     CornerRadius="8"
                     ClipToBounds="True">
                 <Panel>
-                    <!-- Gradient test surface -->
-                    <Border>
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                                <GradientStop Color="#FF6B35" Offset="0" />
-                                <GradientStop Color="#004E98" Offset="0.5" />
-                                <GradientStop Color="#1A936F" Offset="1" />
-                            </LinearGradientBrush>
-                        </Border.Background>
+                    <!-- Gradient test surface with live shader effect -->
+                    <Border Name="PreviewSurface"
+                            Background="{Binding SelectedSurface, Converter={x:Static converters:SurfaceConverters.TestSurfaceToBrush}}">
+                        <Border.Effect>
+                            <preview:DynamicShaderEffect SkslCode="{Binding SkslCode}" />
+                        </Border.Effect>
                     </Border>
 
                     <!-- Status overlay -->

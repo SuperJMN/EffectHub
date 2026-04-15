@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Reactive;
 using System.Reactive.Linq;
 using DynamicData;
 using EffectHub.Core.Models;
@@ -13,8 +14,17 @@ public partial class GalleryViewModel : ReactiveObject
     private readonly IEffectRepository repository;
     private readonly ReadOnlyObservableCollection<Effect> effects;
     [Reactive] private string searchText = "";
+    [Reactive] private Effect? selectedEffect;
+    private readonly ObservableAsPropertyHelper<bool> isDetailVisible;
+    public bool IsDetailVisible => isDetailVisible.Value;
 
     public ReadOnlyObservableCollection<Effect> Effects => effects;
+
+    public ReactiveCommand<Effect, Unit> ViewDetailCommand { get; }
+    public ReactiveCommand<Unit, Unit> CloseDetailCommand { get; }
+    public ReactiveCommand<Effect, Unit> DuplicateAndEditCommand { get; }
+
+    public Action<Effect>? EditEffectCallback { get; set; }
 
     public GalleryViewModel(IEffectRepository repository)
     {
@@ -28,6 +38,20 @@ public partial class GalleryViewModel : ReactiveObject
             .ObserveOn(RxSchedulers.MainThreadScheduler)
             .Bind(out effects)
             .Subscribe();
+
+        ViewDetailCommand = ReactiveCommand.Create<Effect>(effect => SelectedEffect = effect);
+
+        CloseDetailCommand = ReactiveCommand.Create(() => { SelectedEffect = null; });
+
+        DuplicateAndEditCommand = ReactiveCommand.Create<Effect>(effect =>
+        {
+            EditEffectCallback?.Invoke(effect);
+            SelectedEffect = null;
+        });
+
+        isDetailVisible = this.WhenAnyValue(x => x.SelectedEffect)
+            .Select(e => e is not null)
+            .ToProperty(this, x => x.IsDetailVisible);
     }
 
     private static Func<Effect, bool> CreateFilter(string? search)

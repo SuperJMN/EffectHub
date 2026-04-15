@@ -8,6 +8,16 @@ using ReactiveUI.SourceGenerators;
 
 namespace EffectHub.Sections.Editor;
 
+public enum TestSurface
+{
+    WarmGradient,
+    CoolGradient,
+    DarkSolid,
+    LightSolid,
+    Checkerboard,
+    Photo,
+}
+
 public partial class EditorViewModel : ReactiveObject
 {
     private readonly IShaderCompiler compiler;
@@ -21,6 +31,9 @@ public partial class EditorViewModel : ReactiveObject
     [Reactive] private bool isCompiled;
     [Reactive] private string tags = "";
     [Reactive] private string? editingEffectId;
+    [Reactive] private TestSurface selectedSurface = TestSurface.WarmGradient;
+
+    public TestSurface[] AvailableSurfaces { get; } = Enum.GetValues<TestSurface>();
 
     private readonly ObservableAsPropertyHelper<IReadOnlyList<UniformDefinition>> detectedUniforms;
     public IReadOnlyList<UniformDefinition> DetectedUniforms => detectedUniforms.Value;

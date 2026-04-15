@@ -6,7 +6,10 @@
              x:DataType="myEffects:MyEffectsViewModel">
 
     <DockPanel Margin="24">
-        <TextBlock DockPanel.Dock="Top" Text="My Effects" FontSize="28" FontWeight="Bold" Margin="0,0,0,20" />
+        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,20">
+            <TextBlock Text="My Effects" FontSize="28" FontWeight="Bold" VerticalAlignment="Center" />
+            <Button Content="Import" Command="{Binding ImportCommand}" HorizontalAlignment="Right" />
+        </DockPanel>
 
         <ListBox ItemsSource="{Binding Effects}" SelectedItem="{Binding SelectedEffect}">
             <ListBox.ItemTemplate>
@@ -21,6 +24,7 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                            <Button Content="Export" Command="{Binding $parent[ListBox].((myEffects:MyEffectsViewModel)DataContext).ExportCommand}" CommandParameter="{Binding}" />
                             <Button Content="Duplicate" Command="{Binding $parent[ListBox].((myEffects:MyEffectsViewModel)DataContext).DuplicateCommand}" CommandParameter="{Binding}" />
                             <Button Content="Delete" Command="{Binding $parent[ListBox].((myEffects:MyEffectsViewModel)DataContext).DeleteCommand}" CommandParameter="{Binding Id}" />
                         </StackPanel>
