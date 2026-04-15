@@ -42,18 +42,20 @@ public class App : Application
             provider.GetRequiredService<EditorViewModel>(),
             provider.GetRequiredService<MyEffectsViewModel>());
 
-        var window = new Window
-        {
-            Title = "EffectHub — Shader Gallery",
-            Width = 1280,
-            Height = 800,
-            Content = new MainView(),
-            DataContext = mainVm
-        };
-
         if (ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = window;
+            desktop.MainWindow = new Window
+            {
+                Title = "EffectHub — Shader Gallery",
+                Width = 1280,
+                Height = 800,
+                Content = new MainView(),
+                DataContext = mainVm
+            };
+        }
+        else if (ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.ISingleViewApplicationLifetime singleView)
+        {
+            singleView.MainView = new MainView { DataContext = mainVm };
         }
 
         _ = InitializeAsync(repository);

@@ -8,7 +8,7 @@ github:
     from: env
     name: GITHUB_TOKEN
   packages:
-    - project: src/EffectHub/EffectHub.csproj
+    - project: src/EffectHub.Desktop/EffectHub.Desktop.csproj
       formats:
         - type: Deb
           arch:
