@@ -20,7 +20,7 @@ public sealed partial class DynamicShaderEffectFactory :
     private const int Bool0Index = 11;  // Color0Index + 2
     private const int Int0Index = 13;   // Bool0Index + 2
 
-    private static readonly HashSet<string> AutoInjectedUniforms = ["width", "height", "iResolution"];
+    private static readonly HashSet<string> AutoInjectedUniforms = ["width", "height", "iResolution", "time"];
 
     public Thickness GetPadding(DynamicShaderEffect effect) => default;
     public SKImageFilter? CreateFilter(DynamicShaderEffect effect, SkiaEffectContext context) => null;
@@ -149,6 +149,8 @@ public sealed partial class DynamicShaderEffectFactory :
                         uniforms.Add("height", context.EffectBounds.Height);
                     if (allNames.Contains("iResolution"))
                         uniforms.Add("iResolution", new[] { context.EffectBounds.Width, context.EffectBounds.Height });
+                    if (allNames.Contains("time"))
+                        uniforms.Add("time", DynamicShaderEffect.ElapsedSeconds);
                 },
                 fallbackRenderer: (canvas, contentImage, destRect) =>
                 {
@@ -179,6 +181,8 @@ public sealed partial class DynamicShaderEffectFactory :
                                 skUniforms.Add("height", destRect.Height);
                             if (allNames.Contains("iResolution"))
                                 skUniforms.Add("iResolution", new[] { destRect.Width, destRect.Height });
+                            if (allNames.Contains("time"))
+                                skUniforms.Add("time", DynamicShaderEffect.ElapsedSeconds);
 
                             var children = new SKRuntimeEffectChildren(effect);
                             if (hasContent)

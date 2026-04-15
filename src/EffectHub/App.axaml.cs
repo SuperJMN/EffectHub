@@ -65,11 +65,15 @@ public class App : Application
         await repository.LoadAll();
 
         var existing = await repository.GetAll();
-        if (existing.IsSuccess && existing.Value.Count == 0)
+        if (existing.IsSuccess)
         {
+            var existingIds = existing.Value.Select(e => e.Id).ToHashSet();
             foreach (var seed in Core.SeedEffects.GetAll())
             {
-                await repository.Save(seed);
+                if (!existingIds.Contains(seed.Id))
+                {
+                    await repository.Save(seed);
+                }
             }
         }
     }

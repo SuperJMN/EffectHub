@@ -1,6 +1,6 @@
 using System;
 using Avalonia;
-using AvaloniaMcp.AppHost;
+using Zafiro.Avalonia.Mcp.AppHost;
 using ReactiveUI.Avalonia;
 
 namespace EffectHub;

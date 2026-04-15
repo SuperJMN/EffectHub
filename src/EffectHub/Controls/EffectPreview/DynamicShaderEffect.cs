@@ -1,12 +1,23 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using Avalonia;
 using Avalonia.Media;
+using Avalonia.Threading;
 using Effector;
 
 namespace EffectHub.Controls.EffectPreview;
 
 [SkiaEffect(typeof(DynamicShaderEffectFactory))]
-public sealed class DynamicShaderEffect : SkiaEffectBase
+public sealed partial class DynamicShaderEffect : SkiaEffectBase
 {
+    private static readonly Stopwatch SharedClock = Stopwatch.StartNew();
+    private static DispatcherTimer? s_animationTimer;
+    private static readonly List<WeakReference<DynamicShaderEffect>> s_animatedEffects = [];
+
+    internal static float ElapsedSeconds => (float)SharedClock.Elapsed.TotalSeconds;
+
     public static readonly StyledProperty<string> SkslCodeProperty =
         AvaloniaProperty.Register<DynamicShaderEffect, string>(nameof(SkslCode), "half4 main(float2 coord) { return half4(0.0, 0.0, 0.0, 0.0); }");
 
@@ -67,4 +78,58 @@ public sealed class DynamicShaderEffect : SkiaEffectBase
     public const int MaxColorUniforms = 2;
     public const int MaxBoolUniforms = 2;
     public const int MaxIntUniforms = 2;
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == SkslCodeProperty)
+            UpdateAnimationState();
+    }
+
+    private bool _isAnimating;
+
+    private void UpdateAnimationState()
+    {
+        var needsAnimation = !string.IsNullOrEmpty(SkslCode) && TimeUniformRegex().IsMatch(SkslCode);
+
+        if (needsAnimation && !_isAnimating)
+        {
+            _isAnimating = true;
+            RegisterForAnimation(this);
+        }
+        else if (!needsAnimation && _isAnimating)
+        {
+            _isAnimating = false;
+        }
+    }
+
+    private static void RegisterForAnimation(DynamicShaderEffect effect)
+    {
+        s_animatedEffects.Add(new WeakReference<DynamicShaderEffect>(effect));
+
+        if (s_animationTimer != null) return;
+
+        s_animationTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(1000.0 / 30), DispatcherPriority.Render, OnAnimationTick);
+        s_animationTimer.Start();
+    }
+
+    private static void OnAnimationTick(object? sender, EventArgs e)
+    {
+        for (var i = s_animatedEffects.Count - 1; i >= 0; i--)
+        {
+            if (s_animatedEffects[i].TryGetTarget(out var effect) && effect._isAnimating)
+                effect.InvalidateEffect();
+            else
+                s_animatedEffects.RemoveAt(i);
+        }
+
+        if (s_animatedEffects.Count == 0)
+        {
+            s_animationTimer?.Stop();
+            s_animationTimer = null;
+        }
+    }
+
+    [GeneratedRegex(@"\buniform\s+\w+\s+time\s*;")]
+    private static partial Regex TimeUniformRegex();
 }

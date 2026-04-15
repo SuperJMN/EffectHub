@@ -12,7 +12,7 @@
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="Avalonia.Fonts.Inter" />
     <PackageReference Include="Avalonia.Skia" />
-    <PackageReference Include="AvaloniaMcp.AppHost" />
+    <PackageReference Include="Zafiro.Avalonia.Mcp.AppHost" />
     <PackageReference Include="Effector" />
     <PackageReference Include="ReactiveUI" />
     <PackageReference Include="ReactiveUI.Avalonia" />
