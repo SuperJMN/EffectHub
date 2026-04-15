@@ -2,7 +2,8 @@
   <Folder Name="/src/">
     <Project Path="src/EffectHub.Core/EffectHub.Core.csproj" />
     <Project Path="src/EffectHub.Storage.Local/EffectHub.Storage.Local.csproj" />
-    <Project Path="src/EffectHub/EffectHub.csproj" />
+    <Project Path="src/EffectHub.Desktop/EffectHub.Desktop.csproj" />
+    <Project Path="src/EffectHub.Browser/EffectHub.Browser.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/EffectHub.Core.Tests/EffectHub.Core.Tests.csproj" />
