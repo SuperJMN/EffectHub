@@ -3,17 +3,6 @@
              xmlns:preview="clr-namespace:EffectHub.Controls.EffectPreview"
              x:Class="EffectHub.Controls.EffectPreview.EffectPreviewControl">
     <Border ClipToBounds="True" CornerRadius="4">
-        <Border Name="PART_Surface">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#FF6B35" Offset="0" />
-                    <GradientStop Color="#004E98" Offset="0.5" />
-                    <GradientStop Color="#1A936F" Offset="1" />
-                </LinearGradientBrush>
-            </Border.Background>
-            <Border.Effect>
-                <preview:DynamicShaderEffect SkslCode="{Binding SkslCode, RelativeSource={RelativeSource AncestorType=preview:EffectPreviewControl}}" />
-            </Border.Effect>
-        </Border>
+        <preview:SkiaShaderCanvas Name="PART_ShaderCanvas" />
     </Border>
 </UserControl>

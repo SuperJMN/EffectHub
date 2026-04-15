@@ -15,4 +15,7 @@ public record Effect
     public DateTimeOffset UpdatedAt { get; init; } = DateTimeOffset.UtcNow;
     
     public bool HasCpuFallback => !string.IsNullOrWhiteSpace(CpuFallbackCode);
+
+    public IReadOnlyDictionary<string, double> UniformDefaultMap =>
+        Uniforms.ToDictionary(u => u.Name, u => u.DefaultValue);
 }
