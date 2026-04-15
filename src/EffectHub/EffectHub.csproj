@@ -24,6 +24,7 @@
     <PackageReference Include="Serilog.Sinks.Console" />
     <PackageReference Include="Xaml.Behaviors.Avalonia" />
     <PackageReference Include="DynamicData" />
+    <PackageReference Include="Zafiro.Avalonia" />
     <PackageReference Include="CSharpFunctionalExtensions" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport" />
