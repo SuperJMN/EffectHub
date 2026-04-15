@@ -7,9 +7,9 @@
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" />
     <PackageReference Include="DynamicData" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="ReactiveUI" />
     <PackageReference Include="ReactiveUI.SourceGenerators" />
     <PackageReference Include="SkiaSharp" />
-
   </ItemGroup>
 </Project>

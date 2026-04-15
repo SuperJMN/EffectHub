@@ -54,6 +54,26 @@ public static class SeedEffects
                        """,
             AuthorAlias = "EffectHub",
             Tags = ["color", "tint", "overlay"],
+            CpuFallbackCode = """
+                // CPU fallback: simple color tint overlay
+                if (contentImage != null)
+                {
+                    using var paint = new SKPaint();
+                    canvas.DrawImage(contentImage, rect, paint);
+                }
+
+                var intensity = floats.Length > 0 ? floats[0] : 0.5f;
+                var r = floats.Length > 1 ? floats[1] : 0f;
+                var g = floats.Length > 2 ? floats[2] : 0.7f;
+                var b = floats.Length > 3 ? floats[3] : 1f;
+                var alpha = (byte)(intensity * 200);
+                using var tintPaint = new SKPaint
+                {
+                    Color = new SKColor((byte)(r * 255), (byte)(g * 255), (byte)(b * 255), alpha),
+                    BlendMode = SKBlendMode.SrcOver
+                };
+                canvas.DrawRect(rect, tintPaint);
+                """,
             Uniforms =
             [
                 new UniformDefinition { Name = "intensity", Type = UniformType.Float, DefaultValue = 0.5, Min = 0.0, Max = 1.0 },
@@ -115,6 +135,29 @@ public static class SeedEffects
                        """,
             AuthorAlias = "EffectHub",
             Tags = ["vignette", "cinematic", "darkening"],
+            CpuFallbackCode = """
+                // CPU fallback: radial darkening vignette
+                if (contentImage != null)
+                {
+                    using var paint = new SKPaint();
+                    canvas.DrawImage(contentImage, rect, paint);
+                }
+
+                var strength = floats.Length > 0 ? floats[0] : 0.8f;
+                var radius = floats.Length > 1 ? floats[1] : 0.5f;
+                var cx = rect.MidX;
+                var cy = rect.MidY;
+                var maxR = Math.Max(width, height) * radius * 0.6f;
+
+                using var vigShader = SKShader.CreateRadialGradient(
+                    new SKPoint(cx, cy),
+                    Math.Max(maxR, 1f),
+                    new SKColor[] { SKColors.Transparent, new SKColor(0, 0, 0, (byte)(strength * 200)) },
+                    new float[] { 0.4f, 1f },
+                    SKShaderTileMode.Clamp);
+                using var vigPaint = new SKPaint { Shader = vigShader };
+                canvas.DrawRect(rect, vigPaint);
+                """,
             Uniforms =
             [
                 new UniformDefinition { Name = "strength", Type = UniformType.Float, DefaultValue = 0.8, Min = 0.0, Max = 1.0 },

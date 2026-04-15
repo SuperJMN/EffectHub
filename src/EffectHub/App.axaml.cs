@@ -26,6 +26,7 @@ public class App : Application
         var repository = new LocalEffectRepository();
         services.AddSingleton<IEffectRepository>(repository);
         services.AddSingleton<IShaderCompiler, ShaderCompiler>();
+        services.AddSingleton<ICpuFallbackCompiler, CpuFallbackCompiler>();
         services.AddSingleton<IIdentityProvider, LocalIdentityProvider>();
         services.AddSingleton<IEffectPackager, EffectPackager>();
         services.AddSingleton<IFileDialogService, FileDialogService>();

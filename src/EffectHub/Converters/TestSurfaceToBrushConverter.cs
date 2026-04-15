@@ -39,14 +39,16 @@ public class TestSurfaceToBrushConverter : IValueConverter
 
     private static readonly IBrush DarkSolid = new SolidColorBrush(Color.Parse("#1A1A2E"));
     private static readonly IBrush LightSolid = new SolidColorBrush(Color.Parse("#E0E0E0"));
-    private static readonly IBrush PhotoPlaceholder = new SolidColorBrush(Color.Parse("#556B2F"));
+    private static readonly IBrush WhiteSolid = new SolidColorBrush(Colors.White);
+    private static readonly IBrush BlackSolid = new SolidColorBrush(Colors.Black);
 
-    private static readonly IBrush Checkerboard = BuildCheckerboard();
+    private static readonly IBrush Checkerboard = BuildCheckerboard(Color.Parse("#CCCCCC"), Colors.White);
+    private static readonly IBrush TransparentCheckerboard = BuildCheckerboard(Color.Parse("#E8E8E8"), Color.Parse("#F8F8F8"));
 
-    private static VisualBrush BuildCheckerboard()
+    private static VisualBrush BuildCheckerboard(Color color1, Color color2)
     {
-        var lightGray = new SolidColorBrush(Color.Parse("#CCCCCC"));
-        var white = new SolidColorBrush(Colors.White);
+        var brush1 = new SolidColorBrush(color1);
+        var brush2 = new SolidColorBrush(color2);
 
         var grid = new Avalonia.Controls.Canvas
         {
@@ -54,19 +56,19 @@ public class TestSurfaceToBrushConverter : IValueConverter
             Height = 20,
         };
 
-        var topLeft = new Avalonia.Controls.Border { Width = 10, Height = 10, Background = lightGray };
+        var topLeft = new Avalonia.Controls.Border { Width = 10, Height = 10, Background = brush1 };
         Avalonia.Controls.Canvas.SetLeft(topLeft, 0);
         Avalonia.Controls.Canvas.SetTop(topLeft, 0);
 
-        var topRight = new Avalonia.Controls.Border { Width = 10, Height = 10, Background = white };
+        var topRight = new Avalonia.Controls.Border { Width = 10, Height = 10, Background = brush2 };
         Avalonia.Controls.Canvas.SetLeft(topRight, 10);
         Avalonia.Controls.Canvas.SetTop(topRight, 0);
 
-        var bottomLeft = new Avalonia.Controls.Border { Width = 10, Height = 10, Background = white };
+        var bottomLeft = new Avalonia.Controls.Border { Width = 10, Height = 10, Background = brush2 };
         Avalonia.Controls.Canvas.SetLeft(bottomLeft, 0);
         Avalonia.Controls.Canvas.SetTop(bottomLeft, 10);
 
-        var bottomRight = new Avalonia.Controls.Border { Width = 10, Height = 10, Background = lightGray };
+        var bottomRight = new Avalonia.Controls.Border { Width = 10, Height = 10, Background = brush1 };
         Avalonia.Controls.Canvas.SetLeft(bottomRight, 10);
         Avalonia.Controls.Canvas.SetTop(bottomRight, 10);
 
@@ -95,8 +97,10 @@ public class TestSurfaceToBrushConverter : IValueConverter
             TestSurface.CoolGradient => CoolGradient,
             TestSurface.DarkSolid => DarkSolid,
             TestSurface.LightSolid => LightSolid,
+            TestSurface.White => WhiteSolid,
+            TestSurface.Black => BlackSolid,
             TestSurface.Checkerboard => Checkerboard,
-            TestSurface.Photo => PhotoPlaceholder,
+            TestSurface.Transparent => TransparentCheckerboard,
             _ => WarmGradient,
         };
     }

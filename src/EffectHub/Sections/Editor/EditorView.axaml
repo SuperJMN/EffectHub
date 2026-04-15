@@ -34,53 +34,108 @@
     </UserControl.Resources>
 
     <Grid ColumnDefinitions="*,12,*" Margin="16">
-        <!-- Left panel: Code editor -->
+        <!-- Left panel: Tabbed code editors + metadata -->
         <DockPanel Grid.Column="0">
             <!-- Toolbar -->
             <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,12">
-                <TextBlock Text="Shader Editor" FontSize="20" FontWeight="SemiBold" />
+                <TextBlock Text="Effect Editor" FontSize="20" FontWeight="SemiBold" />
                 <Grid ColumnDefinitions="*,8,*">
-                    <TextBox Grid.Column="0" Watermark="Effect name" Text="{Binding EffectName}" />
-                    <TextBox Grid.Column="2" Watermark="Tags (comma separated)" Text="{Binding Tags}" />
+                    <TextBox Grid.Column="0" PlaceholderText="Effect name" Text="{Binding EffectName}" />
+                    <TextBox Grid.Column="2" PlaceholderText="Tags (comma separated)" Text="{Binding Tags}" />
                 </Grid>
-                <TextBox Watermark="Description" Text="{Binding Description}" AcceptsReturn="True" MinHeight="48" />
+                <TextBox PlaceholderText="Description" Text="{Binding Description}" AcceptsReturn="True" MinHeight="48" />
             </StackPanel>
 
-            <!-- Error panel -->
-            <Border DockPanel.Dock="Bottom"
-                    IsVisible="{Binding CompilationError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                    Background="#44FF4444"
-                    CornerRadius="4"
-                    Padding="12"
-                    Margin="0,8,0,0">
-                <StackPanel Spacing="4">
-                    <TextBlock Text="Compilation Error" FontWeight="SemiBold" Foreground="#FFFF6666" />
-                    <TextBlock Text="{Binding CompilationError}" FontFamily="Cascadia Code,Consolas,monospace" FontSize="12" TextWrapping="Wrap" />
-                </StackPanel>
-            </Border>
+            <!-- Error panels -->
+            <StackPanel DockPanel.Dock="Bottom" Spacing="4" Margin="0,8,0,0">
+                <!-- GPU compilation error -->
+                <Border IsVisible="{Binding CompilationError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                        Background="#44FF4444"
+                        CornerRadius="4"
+                        Padding="12">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="GPU Compilation Error" FontWeight="SemiBold" Foreground="#FFFF6666" />
+                        <TextBlock Text="{Binding CompilationError}" FontFamily="Cascadia Code,Consolas,monospace" FontSize="12" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
 
-            <!-- Save button -->
+                <!-- CPU compilation error -->
+                <Border IsVisible="{Binding CpuCompilationError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                        Background="#44FF8844"
+                        CornerRadius="4"
+                        Padding="12">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="CPU Compilation Error" FontWeight="SemiBold" Foreground="#FFFFAA66" />
+                        <TextBlock Text="{Binding CpuCompilationError}" FontFamily="Cascadia Code,Consolas,monospace" FontSize="12" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!-- XAML parse error -->
+                <Border IsVisible="{Binding XamlParseError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                        Background="#444488FF"
+                        CornerRadius="4"
+                        Padding="12">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="XAML Parse Error" FontWeight="SemiBold" Foreground="#FF88AAFF" />
+                        <TextBlock Text="{Binding XamlParseError}" FontFamily="Cascadia Code,Consolas,monospace" FontSize="12" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Save buttons -->
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="8" Margin="0,8,0,0" HorizontalAlignment="Right">
                 <Button Content="New" Command="{Binding NewEffectCommand}" />
                 <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent" />
             </StackPanel>
 
-            <!-- Code editor -->
-            <ae:TextEditor Name="CodeEditor"
-                           FontFamily="Cascadia Code,Consolas,monospace"
-                           FontSize="13"
-                           ShowLineNumbers="True"
-                           Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                <Interaction.Behaviors>
-                    <b:TextEditorBindingBehavior Text="{Binding SkslCode}" />
-                </Interaction.Behaviors>
-            </ae:TextEditor>
+            <!-- Tabbed code editors -->
+            <TabControl>
+                <!-- GPU (SkSL) tab -->
+                <TabItem Header="GPU (SkSL)">
+                    <ae:TextEditor Name="CodeEditor"
+                                   FontFamily="Cascadia Code,Consolas,monospace"
+                                   FontSize="13"
+                                   ShowLineNumbers="True"
+                                   Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                        <Interaction.Behaviors>
+                            <b:TextEditorBindingBehavior Text="{Binding SkslCode}" />
+                        </Interaction.Behaviors>
+                    </ae:TextEditor>
+                </TabItem>
+
+                <!-- CPU (C#) tab -->
+                <TabItem Header="CPU (C#)">
+                    <ae:TextEditor Name="CpuCodeEditor"
+                                   FontFamily="Cascadia Code,Consolas,monospace"
+                                   FontSize="13"
+                                   ShowLineNumbers="True"
+                                   Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                        <Interaction.Behaviors>
+                            <b:TextEditorBindingBehavior Text="{Binding CpuFallbackCode}" />
+                        </Interaction.Behaviors>
+                    </ae:TextEditor>
+                </TabItem>
+
+                <!-- Content (XAML) tab -->
+                <TabItem Header="Content (XAML)">
+                    <ae:TextEditor Name="XamlEditor"
+                                   FontFamily="Cascadia Code,Consolas,monospace"
+                                   FontSize="13"
+                                   ShowLineNumbers="True"
+                                   Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                        <Interaction.Behaviors>
+                            <b:TextEditorBindingBehavior Text="{Binding XamlContent}" />
+                        </Interaction.Behaviors>
+                    </ae:TextEditor>
+                </TabItem>
+            </TabControl>
         </DockPanel>
 
         <GridSplitter Grid.Column="1" ResizeDirection="Columns" />
 
-        <!-- Right panel: Preview + Uniforms -->
+        <!-- Right panel: Dual preview + Uniforms -->
         <DockPanel Grid.Column="2">
+            <!-- Background selector -->
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="0,0,0,12">
                 <TextBlock Text="Preview" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
                 <ComboBox ItemsSource="{Binding AvailableSurfaces}"
@@ -89,13 +144,13 @@
                           VerticalAlignment="Center" />
             </StackPanel>
 
-            <!-- Uniforms panel with editable controls -->
+            <!-- Uniforms panel -->
             <Border DockPanel.Dock="Bottom"
                     Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
                     CornerRadius="4"
                     Padding="12"
                     Margin="0,8,0,0"
-                    MaxHeight="300">
+                    MaxHeight="250">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top" Text="Uniforms" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,8" />
                     <ScrollViewer>
@@ -118,32 +173,79 @@
                 </DockPanel>
             </Border>
 
-            <!-- Preview surface -->
-            <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                    CornerRadius="8"
-                    ClipToBounds="True">
-                <Panel>
-                    <!-- Gradient test surface with live shader effect -->
-                    <Border Name="PreviewSurface"
-                            Background="{Binding SelectedSurface, Converter={x:Static converters:SurfaceConverters.TestSurfaceToBrush}}">
-                        <Border.Effect>
-                            <preview:DynamicShaderEffect SkslCode="{Binding SkslCode}" />
-                        </Border.Effect>
+            <!-- Dual preview panels -->
+            <Grid RowDefinitions="*,8,*">
+                <!-- GPU Preview -->
+                <DockPanel Grid.Row="0">
+                    <DockPanel DockPanel.Dock="Top" Margin="0,0,0,4">
+                        <TextBlock Text="GPU" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" />
+                        <ToggleButton Name="GpuToggle"
+                                      IsChecked="{Binding IsGpuRunning}"
+                                      Content="{Binding IsGpuRunning, Converter={x:Static converters:RunningConverters.ToLabel}}"
+                                      FontSize="11"
+                                      Padding="8,2"
+                                      HorizontalAlignment="Right" />
+                    </DockPanel>
+                    <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                            CornerRadius="8"
+                            ClipToBounds="True">
+                        <Panel>
+                            <Border Name="GpuPreviewSurface"
+                                    Background="{Binding SelectedSurface, Converter={x:Static converters:SurfaceConverters.TestSurfaceToBrush}}">
+                                <Border.Effect>
+                                    <preview:DynamicShaderEffect SkslCode="{Binding SkslCode}" />
+                                </Border.Effect>
+                            </Border>
+                            <!-- GPU status overlay -->
+                            <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8"
+                                    Background="#88000000" CornerRadius="4" Padding="8,4">
+                                <TextBlock FontSize="11">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}GPU: {0}">
+                                            <Binding Path="IsCompiled" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Border>
+                        </Panel>
                     </Border>
+                </DockPanel>
 
-                    <!-- Status overlay -->
-                    <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8"
-                            Background="#88000000" CornerRadius="4" Padding="8,4">
-                        <TextBlock FontSize="11">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}Compiled: {0}">
-                                    <Binding Path="IsCompiled" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
+                <GridSplitter Grid.Row="1" ResizeDirection="Rows" />
+
+                <!-- CPU Preview -->
+                <DockPanel Grid.Row="2">
+                    <DockPanel DockPanel.Dock="Top" Margin="0,0,0,4">
+                        <TextBlock Text="CPU" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" />
+                        <ToggleButton Name="CpuToggle"
+                                      IsChecked="{Binding IsCpuRunning}"
+                                      Content="{Binding IsCpuRunning, Converter={x:Static converters:RunningConverters.ToLabel}}"
+                                      FontSize="11"
+                                      Padding="8,2"
+                                      HorizontalAlignment="Right" />
+                    </DockPanel>
+                    <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                            CornerRadius="8"
+                            ClipToBounds="True">
+                        <Panel>
+                            <Border Name="CpuPreviewSurface"
+                                    Background="{Binding SelectedSurface, Converter={x:Static converters:SurfaceConverters.TestSurfaceToBrush}}">
+                            </Border>
+                            <!-- CPU status overlay -->
+                            <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8"
+                                    Background="#88000000" CornerRadius="4" Padding="8,4">
+                                <TextBlock FontSize="11">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}CPU: {0}">
+                                            <Binding Path="IsCpuCompiled" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Border>
+                        </Panel>
                     </Border>
-                </Panel>
-            </Border>
+                </DockPanel>
+            </Grid>
         </DockPanel>
     </Grid>
 </UserControl>
