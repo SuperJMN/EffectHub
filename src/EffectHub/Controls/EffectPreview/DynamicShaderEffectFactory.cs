@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using Avalonia;
 using Effector;
@@ -17,6 +18,8 @@ public sealed partial class DynamicShaderEffectFactory :
     private const int Uniform2Index = 3;
     private const int Uniform3Index = 4;
     private const int Uniform4Index = 5;
+
+    private static readonly HashSet<string> AutoInjectedUniforms = ["width", "height", "iResolution"];
 
     public Thickness GetPadding(DynamicShaderEffect effect) => default;
     public SKImageFilter? CreateFilter(DynamicShaderEffect effect, SkiaEffectContext context) => null;
@@ -42,22 +45,86 @@ public sealed partial class DynamicShaderEffectFactory :
 
         try
         {
+            var allNames = ParseUniformNames(skslCode);
+            var userUniforms = allNames.Where(n => !AutoInjectedUniforms.Contains(n)).ToList();
+            var hasContent = skslCode.Contains("uniform shader content");
+
             return SkiaRuntimeShaderBuilder.Create(
                 skslCode,
                 context,
-                uniforms =>
+                contentChildName: hasContent ? "content" : null,
+                configureUniforms: uniforms =>
                 {
-                    var names = ParseUniformNames(skslCode);
-                    for (var i = 0; i < Math.Min(names.Count, uniformValues.Length); i++)
-                    {
-                        uniforms.Add(names[i], uniformValues[i]);
-                    }
+                    for (var i = 0; i < Math.Min(userUniforms.Count, uniformValues.Length); i++)
+                        uniforms.Add(userUniforms[i], uniformValues[i]);
 
-                    // Auto-inject width/height if present
-                    if (names.Contains("width"))
+                    if (allNames.Contains("width"))
                         uniforms.Add("width", context.EffectBounds.Width);
-                    if (names.Contains("height"))
+                    if (allNames.Contains("height"))
                         uniforms.Add("height", context.EffectBounds.Height);
+                    if (allNames.Contains("iResolution"))
+                        uniforms.Add("iResolution", new[] { context.EffectBounds.Width, context.EffectBounds.Height });
+                },
+                fallbackRenderer: (canvas, contentImage, destRect) =>
+                {
+                    try
+                    {
+                        var effect = SKRuntimeEffect.CreateShader(skslCode, out _);
+                        if (effect is null)
+                        {
+                            canvas.DrawImage(contentImage, destRect);
+                            return;
+                        }
+
+                        using (effect)
+                        {
+                            var uniforms = new SKRuntimeEffectUniforms(effect);
+                            for (var i = 0; i < Math.Min(userUniforms.Count, uniformValues.Length); i++)
+                                uniforms.Add(userUniforms[i], uniformValues[i]);
+
+                            if (allNames.Contains("width"))
+                                uniforms.Add("width", destRect.Width);
+                            if (allNames.Contains("height"))
+                                uniforms.Add("height", destRect.Height);
+                            if (allNames.Contains("iResolution"))
+                                uniforms.Add("iResolution", new[] { destRect.Width, destRect.Height });
+
+                            var children = new SKRuntimeEffectChildren(effect);
+                            if (hasContent)
+                            {
+                                using var contentShader = contentImage.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp);
+                                children.Add("content", contentShader);
+
+                                using var shader = effect.ToShader(uniforms, children);
+                                if (shader is not null)
+                                {
+                                    using var paint = new SKPaint { Shader = shader, BlendMode = SKBlendMode.SrcOver };
+                                    canvas.DrawRect(destRect, paint);
+                                }
+                                else
+                                {
+                                    canvas.DrawImage(contentImage, destRect);
+                                }
+                            }
+                            else
+                            {
+                                using var shader = effect.ToShader(uniforms, children);
+                                if (shader is not null)
+                                {
+                                    using var paint = new SKPaint { Shader = shader, BlendMode = SKBlendMode.SrcOver };
+                                    canvas.DrawRect(destRect, paint);
+                                }
+                                else
+                                {
+                                    canvas.DrawImage(contentImage, destRect);
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        canvas.DrawImage(contentImage, destRect);
+                    }
                 });
         }
         catch

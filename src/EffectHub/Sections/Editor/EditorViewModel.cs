@@ -44,16 +44,20 @@ public partial class EditorViewModel : ReactiveObject
     private const string DefaultShader =
         """
         // EffectHub — Write your SkSL shader here
+        // Use 'content.eval(coord)' to sample the underlying visual
         // Uniforms are auto-detected and shown as controls
 
+        uniform shader content;
         uniform float intensity;
         uniform float red;
         uniform float green;
         uniform float blue;
 
         half4 main(float2 coord) {
-            half premul = half(intensity);
-            return half4(half(red) * premul, half(green) * premul, half(blue) * premul, premul);
+            half4 c = content.eval(coord);
+            half3 tint = half3(half(red), half(green), half(blue));
+            half3 mixed = mix(c.rgb, tint * c.a, half(intensity));
+            return half4(mixed, c.a);
         }
         """;
 

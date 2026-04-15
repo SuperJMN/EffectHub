@@ -1,5 +1,6 @@
 using System;
 using Avalonia;
+using AvaloniaMcp.AppHost;
 using ReactiveUI.Avalonia;
 
 namespace EffectHub;
@@ -14,6 +15,7 @@ class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
+            .UseMcpDiagnostics()
 #if DEBUG
             .WithDeveloperTools()
 #endif
