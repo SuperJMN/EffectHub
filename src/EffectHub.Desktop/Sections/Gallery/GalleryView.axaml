@@ -116,10 +116,12 @@
                     <!-- Scrollable content -->
                     <ScrollViewer>
                         <StackPanel Spacing="12">
-                            <!-- Live shader preview -->
-                            <preview:EffectPreviewControl Height="200"
-                                                           SkslCode="{Binding SkslCode}"
-                                                           UniformDefaults="{Binding UniformDefaultMap}" />
+                            <!-- Live shader preview (DynamicShaderEffect for real rendering) -->
+                            <Border Height="200" Background="Black" ClipToBounds="True" CornerRadius="4">
+                                <Border.Effect>
+                                    <preview:DynamicShaderEffect SkslCode="{Binding SkslCode}" />
+                                </Border.Effect>
+                            </Border>
 
                             <!-- Description -->
                             <TextBlock Text="{Binding Description}"

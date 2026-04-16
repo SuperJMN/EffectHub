@@ -221,12 +221,7 @@ public sealed partial class SkiaShaderCanvas : Avalonia.Controls.Control
 
         private static SKShader CreateContentShader(float w, float h)
         {
-            return SKShader.CreateLinearGradient(
-                new SKPoint(0, 0),
-                new SKPoint(w, h),
-                [new SKColor(80, 140, 220), new SKColor(220, 120, 180), new SKColor(140, 200, 120)],
-                [0f, 0.5f, 1f],
-                SKShaderTileMode.Clamp);
+            return SKShader.CreateColor(SKColors.Black);
         }
     }
 }

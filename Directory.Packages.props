@@ -18,7 +18,7 @@
     <PackageVersion Include="Zafiro.Avalonia" Version="51.6.3" />
     <PackageVersion Include="Zafiro.UI" Version="47.0.2" />
     <!-- Effector -->
-    <PackageVersion Include="Effector" Version="0.9.0" />
+    <PackageVersion Include="Effector" Version="0.9.2" />
     <!-- ReactiveUI -->
     <PackageVersion Include="ReactiveUI" Version="23.1.8" />
     <PackageVersion Include="ReactiveUI.Avalonia" Version="11.4.12" />

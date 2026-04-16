@@ -44,7 +44,7 @@ public partial class EditorViewModel : ReactiveObject
     [Reactive] private bool isCpuRunning;
     [Reactive] private string tags = "";
     [Reactive] private string? editingEffectId;
-    [Reactive] private TestSurface selectedSurface = TestSurface.WarmGradient;
+    [Reactive] private TestSurface selectedSurface = TestSurface.Black;
 
     public TestSurface[] AvailableSurfaces { get; } = Enum.GetValues<TestSurface>();
 
