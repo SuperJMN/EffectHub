@@ -5,6 +5,7 @@ using EffectHub.Core.Models;
 using EffectHub.Core.Rendering;
 using EffectHub.Core.Services;
 using ReactiveUI;
+using ReactiveUI.Avalonia;
 using ReactiveUI.SourceGenerators;
 using Zafiro.Avalonia.Controls.PropertyGrid.ViewModels;
 
@@ -43,7 +44,7 @@ public partial class EditorViewModel : ReactiveObject
     [Reactive] private bool isCpuRunning;
     [Reactive] private string tags = "";
     [Reactive] private string? editingEffectId;
-    [Reactive] private TestSurface selectedSurface = TestSurface.WarmGradient;
+    [Reactive] private TestSurface selectedSurface = TestSurface.Black;
 
     public TestSurface[] AvailableSurfaces { get; } = Enum.GetValues<TestSurface>();
 
@@ -131,7 +132,7 @@ public partial class EditorViewModel : ReactiveObject
 
         // GPU (SkSL) compilation pipeline
         var compilationResults = this.WhenAnyValue(x => x.SkslCode)
-            .Throttle(TimeSpan.FromMilliseconds(500))
+            .Throttle(TimeSpan.FromMilliseconds(500), AvaloniaScheduler.Instance)
             .Where(code => !string.IsNullOrWhiteSpace(code))
             .Select(code => compiler.Compile(code))
             .ObserveOn(RxSchedulers.MainThreadScheduler)
@@ -164,7 +165,7 @@ public partial class EditorViewModel : ReactiveObject
 
         // CPU fallback compilation pipeline
         var cpuCompilationResults = this.WhenAnyValue(x => x.CpuFallbackCode)
-            .Throttle(TimeSpan.FromMilliseconds(500))
+            .Throttle(TimeSpan.FromMilliseconds(500), AvaloniaScheduler.Instance)
             .Where(code => !string.IsNullOrWhiteSpace(code))
             .Select(code => cpuCompiler.Compile(code))
             .ObserveOn(RxSchedulers.MainThreadScheduler)
@@ -184,7 +185,7 @@ public partial class EditorViewModel : ReactiveObject
 
         // XAML content change notification
         this.WhenAnyValue(x => x.XamlContent)
-            .Throttle(TimeSpan.FromMilliseconds(300))
+            .Throttle(TimeSpan.FromMilliseconds(300), AvaloniaScheduler.Instance)
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .ObserveOn(RxSchedulers.MainThreadScheduler)
             .Subscribe(xaml => XamlContentParsed?.Invoke(xaml));

@@ -5,6 +5,7 @@ using DynamicData;
 using EffectHub.Core.Models;
 using EffectHub.Core.Services;
 using ReactiveUI;
+using ReactiveUI.Avalonia;
 using ReactiveUI.SourceGenerators;
 
 namespace EffectHub.Sections.Gallery;
@@ -32,7 +33,7 @@ public partial class GalleryViewModel : ReactiveObject
 
         repository.Connect()
             .Filter(this.WhenAnyValue(x => x.SearchText)
-                .Throttle(TimeSpan.FromMilliseconds(300))
+                .Throttle(TimeSpan.FromMilliseconds(300), AvaloniaScheduler.Instance)
                 .Select(CreateFilter))
             .SortBy(e => e.Name)
             .ObserveOn(RxSchedulers.MainThreadScheduler)

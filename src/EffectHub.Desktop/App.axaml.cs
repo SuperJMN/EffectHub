@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using EffectHub.Core.Compilation;
+using EffectHub.Core.Rendering;
 using EffectHub.Core.Services;
 using EffectHub.Sections.Editor;
 using EffectHub.Sections.Gallery;
@@ -23,10 +24,22 @@ public class App : Application
     {
         var services = new ServiceCollection();
 
-        var repository = new LocalEffectRepository();
-        services.AddSingleton<IEffectRepository>(repository);
+        if (OperatingSystem.IsBrowser())
+        {
+            var memoryRepo = new InMemoryEffectRepository();
+            memoryRepo.Seed(Core.SeedEffects.GetAll());
+            services.AddSingleton<IEffectRepository>(memoryRepo);
+            services.AddSingleton<ICpuFallbackCompiler, NoOpCpuFallbackCompiler>();
+        }
+        else
+        {
+            var localRepo = new LocalEffectRepository();
+            services.AddSingleton<IEffectRepository>(localRepo);
+            services.AddSingleton<ICpuFallbackCompiler, CpuFallbackCompiler>();
+            _ = InitializeAsync(localRepo);
+        }
+
         services.AddSingleton<IShaderCompiler, ShaderCompiler>();
-        services.AddSingleton<ICpuFallbackCompiler, CpuFallbackCompiler>();
         services.AddSingleton<IIdentityProvider, LocalIdentityProvider>();
         services.AddSingleton<IEffectPackager, EffectPackager>();
         services.AddSingleton<IFileDialogService, FileDialogService>();
@@ -58,8 +71,6 @@ public class App : Application
             singleView.MainView = new MainView { DataContext = mainVm };
         }
 
-        _ = InitializeAsync(repository);
-
         base.OnFrameworkInitializationCompleted();
     }
 
@@ -79,5 +90,11 @@ public class App : Application
                 }
             }
         }
+    }
+
+    private sealed class NoOpCpuFallbackCompiler : ICpuFallbackCompiler
+    {
+        public CpuFallbackCompilationResult Compile(string csharpCode)
+            => CpuFallbackCompilationResult.Failure("CPU fallback compilation is not supported in the browser.");
     }
 }

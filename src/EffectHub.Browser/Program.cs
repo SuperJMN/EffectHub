@@ -3,15 +3,20 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Browser;
 using EffectHub;
+using ReactiveUI.Avalonia;
 
 [assembly: SupportedOSPlatform("browser")]
 
 internal sealed partial class Program
 {
-    private static Task Main(string[] args) => BuildAvaloniaApp()
-        .StartBrowserAppAsync("out");
+    private static async Task Main(string[] args)
+    {
+        await BuildAvaloniaApp()
+            .WithInterFont()
+            .UseReactiveUI(_ => { })
+            .StartBrowserAppAsync("out");
+    }
 
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
-            .WithInterFont();
+        => AppBuilder.Configure<App>();
 }
