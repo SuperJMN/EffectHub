@@ -7,6 +7,7 @@ public record Effect
     public string Description { get; init; } = "";
     public required string SkslCode { get; init; }
     public string? CpuFallbackCode { get; init; }
+    public string AuthorPubKey { get; init; } = "";
     public string AuthorAlias { get; init; } = "Anonymous";
     public IReadOnlyList<string> Tags { get; init; } = [];
     public IReadOnlyList<UniformDefinition> Uniforms { get; init; } = [];

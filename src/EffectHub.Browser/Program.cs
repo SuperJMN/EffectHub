@@ -7,6 +7,8 @@ using ReactiveUI.Avalonia;
 
 [assembly: SupportedOSPlatform("browser")]
 
+namespace EffectHub.Browser;
+
 internal sealed partial class Program
 {
     private static async Task Main(string[] args)

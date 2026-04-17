@@ -7,30 +7,24 @@ using EffectHub.Core.Services;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 using ReactiveUI.SourceGenerators;
+using Zafiro.Avalonia.Dialogs;
+using Zafiro.UI.Commands;
 
 namespace EffectHub.Sections.Gallery;
 
 public partial class GalleryViewModel : ReactiveObject
 {
-    private readonly IEffectRepository repository;
     private readonly ReadOnlyObservableCollection<Effect> effects;
     [Reactive] private string searchText = "";
-    [Reactive] private Effect? selectedEffect;
-    private readonly ObservableAsPropertyHelper<bool> isDetailVisible;
-    public bool IsDetailVisible => isDetailVisible.Value;
 
     public ReadOnlyObservableCollection<Effect> Effects => effects;
 
     public ReactiveCommand<Effect, Unit> ViewDetailCommand { get; }
-    public ReactiveCommand<Unit, Unit> CloseDetailCommand { get; }
-    public ReactiveCommand<Effect, Unit> DuplicateAndEditCommand { get; }
 
     public Action<Effect>? EditEffectCallback { get; set; }
 
-    public GalleryViewModel(IEffectRepository repository)
+    public GalleryViewModel(IEffectRepository repository, IDialog dialogService)
     {
-        this.repository = repository;
-
         repository.Connect()
             .Filter(this.WhenAnyValue(x => x.SearchText)
                 .Throttle(TimeSpan.FromMilliseconds(300), AvaloniaScheduler.Instance)
@@ -40,19 +34,19 @@ public partial class GalleryViewModel : ReactiveObject
             .Bind(out effects)
             .Subscribe();
 
-        ViewDetailCommand = ReactiveCommand.Create<Effect>(effect => SelectedEffect = effect);
-
-        CloseDetailCommand = ReactiveCommand.Create(() => { SelectedEffect = null; });
-
-        DuplicateAndEditCommand = ReactiveCommand.Create<Effect>(effect =>
+        ViewDetailCommand = ReactiveCommand.CreateFromTask<Effect>(async effect =>
         {
-            EditEffectCallback?.Invoke(effect);
-            SelectedEffect = null;
+            var detailVm = new EffectDetailViewModel(effect);
+            var confirmed = await dialogService.Show(detailVm, effect.Name, (_, closeable) => new IOption[]
+            {
+                new Option("Duplicate and Edit", ReactiveCommand.Create(() =>
+                {
+                    EditEffectCallback?.Invoke(effect);
+                    closeable.Close();
+                }).Enhance(), new Settings { IsDefault = true }),
+                new Option("Close", ReactiveCommand.Create(closeable.Close).Enhance(), new Settings { IsCancel = true }),
+            });
         });
-
-        isDetailVisible = this.WhenAnyValue(x => x.SelectedEffect)
-            .Select(e => e is not null)
-            .ToProperty(this, x => x.IsDetailVisible);
     }
 
     private static Func<Effect, bool> CreateFilter(string? search)

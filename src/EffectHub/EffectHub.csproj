@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
+    <PackageReference Include="Avalonia.Skia" />
+    <PackageReference Include="Effector" />
+    <PackageReference Include="ReactiveUI" />
+    <PackageReference Include="ReactiveUI.Avalonia" />
+    <PackageReference Include="ReactiveUI.SourceGenerators" />
+    <PackageReference Include="Avalonia.AvaloniaEdit" />
+    <PackageReference Include="AvaloniaEdit.TextMate" />
+    <PackageReference Include="Optris.Icons.Avalonia.FontAwesome" />
+    <PackageReference Include="Optris.Icons.Avalonia.MaterialDesign" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Xaml.Behaviors.Avalonia" />
+    <PackageReference Include="DynamicData" />
+    <PackageReference Include="Zafiro.Avalonia" />
+    <PackageReference Include="Zafiro.Avalonia.Dialogs" />
+    <PackageReference Include="CSharpFunctionalExtensions" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EffectHub.Core\EffectHub.Core.csproj" />
+    <ProjectReference Include="..\EffectHub.Identity\EffectHub.Identity.csproj" />
+    <ProjectReference Include="..\EffectHub.Api.Client\EffectHub.Api.Client.csproj" />
+    <ProjectReference Include="..\EffectHub.Storage.Local\EffectHub.Storage.Local.csproj" />
+  </ItemGroup>
+</Project>

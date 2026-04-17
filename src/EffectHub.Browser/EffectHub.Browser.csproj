@@ -15,6 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EffectHub.Desktop\EffectHub.Desktop.csproj" />
+    <ProjectReference Include="..\EffectHub\EffectHub.csproj" />
   </ItemGroup>
 </Project>

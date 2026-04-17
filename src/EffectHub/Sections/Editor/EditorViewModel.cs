@@ -276,6 +276,7 @@ public partial class EditorViewModel : ReactiveObject
             Description = Description,
             SkslCode = SkslCode,
             CpuFallbackCode = string.IsNullOrWhiteSpace(CpuFallbackCode) ? null : CpuFallbackCode,
+            AuthorPubKey = identity.CurrentId,
             AuthorAlias = identity.CurrentAlias,
             Tags = tagList,
             Uniforms = DetectedUniforms,

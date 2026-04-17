@@ -6,6 +6,11 @@ public interface IIdentityProvider
     string CurrentId { get; }
 }
 
+public interface IIdentitySigner
+{
+    Task<string> SignAsync(string message);
+}
+
 public class LocalIdentityProvider : IIdentityProvider
 {
     public string CurrentAlias { get; set; } = "Local User";

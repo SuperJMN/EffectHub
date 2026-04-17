@@ -3,7 +3,7 @@ using Avalonia;
 using Zafiro.Avalonia.Mcp.AppHost;
 using ReactiveUI.Avalonia;
 
-namespace EffectHub;
+namespace EffectHub.Desktop;
 
 class Program
 {

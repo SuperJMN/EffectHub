@@ -16,6 +16,7 @@
     <PackageVersion Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.0" />
     <!-- Zafiro -->
     <PackageVersion Include="Zafiro.Avalonia" Version="51.6.3" />
+    <PackageVersion Include="Zafiro.Avalonia.Dialogs" Version="51.6.3" />
     <PackageVersion Include="Zafiro.UI" Version="47.0.2" />
     <!-- Effector -->
     <PackageVersion Include="Effector" Version="0.9.2" />
@@ -41,6 +42,11 @@
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <!-- Roslyn -->
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+    <!-- Nostr / Crypto -->
+    <PackageVersion Include="NBitcoin.Secp256k1" Version="4.0.0" />
+    <!-- EF Core -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0" />
     <!-- Testing -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
     <PackageVersion Include="xunit" Version="2.9.0" />

@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:gallery="clr-namespace:EffectHub.Sections.Gallery"
+             xmlns:models="clr-namespace:EffectHub.Core.Models;assembly=EffectHub.Core"
+             xmlns:preview="clr-namespace:EffectHub.Controls.EffectPreview"
+             xmlns:ae="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+             xmlns:b="clr-namespace:EffectHub.Behaviors"
+             x:Class="EffectHub.Sections.Gallery.EffectDetailView"
+             x:DataType="gallery:EffectDetailViewModel">
+
+    <Grid RowDefinitions="200,12,*" Width="700" Height="500">
+        <!-- Live shader preview -->
+        <Border Grid.Row="0" Background="Black" ClipToBounds="True" CornerRadius="4">
+            <Border.Effect>
+                <preview:DynamicShaderEffect SkslCode="{Binding SkslCode}" />
+            </Border.Effect>
+        </Border>
+
+        <GridSplitter Grid.Row="1" ResizeDirection="Rows" />
+
+        <!-- Code editor + metadata -->
+        <DockPanel Grid.Row="2">
+            <!-- Metadata -->
+            <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,8"
+                        DataContext="{Binding Effect}" x:DataType="models:Effect">
+                <TextBlock Text="{Binding Description}"
+                           TextWrapping="Wrap"
+                           Opacity="0.8"
+                           FontSize="14" />
+                <StackPanel Orientation="Horizontal" Spacing="24">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <PathIcon Data="{StaticResource mdi-account}" Width="14" Height="14" Opacity="0.6" />
+                        <TextBlock Text="{Binding AuthorAlias}" FontSize="13" Opacity="0.7" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:yyyy-MM-dd}'}"
+                               FontSize="13"
+                               Opacity="0.5" />
+                </StackPanel>
+                <ItemsControl ItemsSource="{Binding Tags}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                                    CornerRadius="4"
+                                    Padding="8,4"
+                                    Margin="0,0,6,4">
+                                <TextBlock Text="{Binding}" FontSize="12" Opacity="0.8" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- SkSL code editor -->
+            <ae:TextEditor FontFamily="Cascadia Code,Consolas,monospace"
+                           FontSize="13"
+                           ShowLineNumbers="True"
+                           Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                <Interaction.Behaviors>
+                    <b:TextEditorBindingBehavior Text="{Binding SkslCode}" />
+                </Interaction.Behaviors>
+            </ae:TextEditor>
+        </DockPanel>
+    </Grid>
+</UserControl>

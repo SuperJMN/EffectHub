@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NBitcoin.Secp256k1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EffectHub.Core\EffectHub.Core.csproj" />
+  </ItemGroup>
+</Project>

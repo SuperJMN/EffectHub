@@ -1,7 +1,11 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/EffectHub/EffectHub.csproj" />
     <Project Path="src/EffectHub.Core/EffectHub.Core.csproj" />
+    <Project Path="src/EffectHub.Identity/EffectHub.Identity.csproj" />
     <Project Path="src/EffectHub.Storage.Local/EffectHub.Storage.Local.csproj" />
+    <Project Path="src/EffectHub.Api/EffectHub.Api.csproj" />
+    <Project Path="src/EffectHub.Api.Client/EffectHub.Api.Client.csproj" />
     <Project Path="src/EffectHub.Desktop/EffectHub.Desktop.csproj" />
     <Project Path="src/EffectHub.Browser/EffectHub.Browser.csproj" />
   </Folder>

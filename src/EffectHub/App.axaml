@@ -1,0 +1,20 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:gallery="clr-namespace:EffectHub.Sections.Gallery"
+             x:Class="EffectHub.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
+        <StyleInclude Source="avares://Zafiro.Avalonia/Styles.axaml" />
+        <StyleInclude Source="avares://Zafiro.Avalonia.Dialogs/Styles.axaml" />
+    </Application.Styles>
+
+    <Application.DataTemplates>
+        <DataTemplate DataType="gallery:EffectDetailViewModel">
+            <gallery:EffectDetailView />
+        </DataTemplate>
+    </Application.DataTemplates>
+
+</Application>
