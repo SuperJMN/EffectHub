@@ -197,6 +197,21 @@ public class ApiEffectRepository : IEffectRepository
         }
     }
 
+    /// <summary>Number of effects currently in the local cache.</summary>
+    public int Count => cache.Count;
+
+    /// <summary>
+    /// Populates the local cache with the given effects (used as fallback when API is unavailable).
+    /// </summary>
+    public void SeedLocal(IEnumerable<Effect> effects)
+    {
+        cache.Edit(updater =>
+        {
+            updater.Clear();
+            updater.AddOrUpdate(effects);
+        });
+    }
+
     private async Task SignRequest(HttpRequestMessage request)
     {
         if (signer is null || identity is null) return;

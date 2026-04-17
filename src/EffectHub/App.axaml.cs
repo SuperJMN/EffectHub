@@ -94,7 +94,7 @@ public class App : Application
         var identity = services.GetRequiredService<NostrIdentityService>();
         await identity.GetOrCreateKeyPairAsync();
 
-        // Load effects from API
+        // Load effects from API; fall back to built-in seed effects when API is unavailable
         var apiRepo = services.GetRequiredService<ApiEffectRepository>();
         try
         {
@@ -102,10 +102,12 @@ public class App : Application
         }
         catch
         {
-            // API unavailable — seed with built-in effects as fallback
-            var cache = apiRepo;
-            var seedEffects = Core.SeedEffects.GetAll();
-            // If no effects loaded, the Gallery will be empty but functional
+            // ignored — RefreshAsync only populates cache on success
+        }
+
+        if (apiRepo.Count == 0)
+        {
+            apiRepo.SeedLocal(Core.SeedEffects.GetAll());
         }
     }
 
