@@ -8,6 +8,7 @@ public static class IndexConverters
     public static readonly IValueConverter IsZero = new IndexEqualConverter(0);
     public static readonly IValueConverter IsOne = new IndexEqualConverter(1);
     public static readonly IValueConverter IsTwo = new IndexEqualConverter(2);
+    public static readonly IValueConverter IsThree = new IndexEqualConverter(3);
 
     private class IndexEqualConverter(int target) : IValueConverter
     {

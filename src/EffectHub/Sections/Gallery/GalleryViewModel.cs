@@ -43,8 +43,8 @@ public partial class GalleryViewModel : ReactiveObject
                 {
                     EditEffectCallback?.Invoke(effect);
                     closeable.Close();
-                }).Enhance(), new Settings { IsDefault = true }),
-                new Option("Close", ReactiveCommand.Create(closeable.Close).Enhance(), new Settings { IsCancel = true }),
+                }).Enhance(), new Zafiro.Avalonia.Dialogs.Settings { IsDefault = true }),
+                new Option("Close", ReactiveCommand.Create(closeable.Close).Enhance(), new Zafiro.Avalonia.Dialogs.Settings { IsCancel = true }),
             });
         });
     }

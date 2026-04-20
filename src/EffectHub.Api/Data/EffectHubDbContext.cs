@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using EffectHub.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EffectHub.Api.Data;
 
@@ -31,11 +32,17 @@ public class EffectHubDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        var dtoToTicks = new ValueConverter<DateTimeOffset, long>(
+            v => v.UtcTicks,
+            v => new DateTimeOffset(v, TimeSpan.Zero));
+
         modelBuilder.Entity<EffectEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.AuthorPubKey);
             entity.HasIndex(e => e.Name);
+            entity.Property(e => e.CreatedAt).HasConversion(dtoToTicks);
+            entity.Property(e => e.UpdatedAt).HasConversion(dtoToTicks);
         });
     }
 }

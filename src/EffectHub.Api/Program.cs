@@ -11,11 +11,27 @@ builder.Services.AddDbContext<EffectHubDbContext>(options =>
 
 builder.Services.AddCors(options =>
 {
+    var allowedOrigins = builder.Configuration
+        .GetSection("Cors:AllowedOrigins")
+        .Get<string[]>() ?? Array.Empty<string>();
+
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        if (allowedOrigins.Length > 0)
+        {
+            policy.WithOrigins(allowedOrigins)
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        }
+        else
+        {
+            // No explicit origins configured (typical in Development): allow any origin so the
+            // Browser/Desktop heads can talk to the API without extra setup. For production set
+            // the Cors:AllowedOrigins array in appsettings.json.
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        }
     });
 });
 
@@ -37,6 +53,18 @@ using (var scope = app.Services.CreateScope())
         await db.SaveChangesAsync();
     }
 }
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+        var feature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        var message = feature?.Error.Message ?? "Internal server error";
+        await context.Response.WriteAsJsonAsync(new { error = message });
+    });
+});
 
 app.UseCors();
 app.MapEffectsEndpoints();

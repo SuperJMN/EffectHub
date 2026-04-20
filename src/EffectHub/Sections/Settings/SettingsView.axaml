@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:settings="clr-namespace:EffectHub.Sections.Settings"
+             x:Class="EffectHub.Sections.Settings.SettingsView"
+             x:DataType="settings:SettingsViewModel">
+
+    <ScrollViewer>
+        <StackPanel Margin="24" Spacing="16" MaxWidth="640" HorizontalAlignment="Left">
+            <TextBlock Text="Settings" FontSize="28" FontWeight="Bold" />
+
+            <TextBlock Text="API endpoint" FontSize="16" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <TextBlock Text="Base URL of the EffectHub API server (e.g. http://localhost:5120 or https://api.example.com)."
+                       Opacity="0.7" TextWrapping="Wrap" />
+
+            <TextBox Text="{Binding ApiBaseUrl}" PlaceholderText="https://api.example.com" />
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="Save" Command="{Binding SaveCommand}" />
+                <Button Content="Test connection" Command="{Binding TestCommand}" />
+            </StackPanel>
+
+            <TextBlock Text="{Binding StatusMessage}" Opacity="0.85" TextWrapping="Wrap" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

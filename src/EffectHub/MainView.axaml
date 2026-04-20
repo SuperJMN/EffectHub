@@ -4,6 +4,7 @@
              xmlns:gallery="clr-namespace:EffectHub.Sections.Gallery"
              xmlns:editor="clr-namespace:EffectHub.Sections.Editor"
              xmlns:myEffects="clr-namespace:EffectHub.Sections.MyEffects"
+             xmlns:settings="clr-namespace:EffectHub.Sections.Settings"
              x:Class="EffectHub.MainView"
              x:DataType="local:MainViewModel">
 
@@ -36,6 +37,12 @@
                                 <TextBlock Text="My Effects" VerticalAlignment="Center" />
                             </StackPanel>
                         </ListBoxItem>
+                        <ListBoxItem>
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <PathIcon Data="{StaticResource mdi-cog}" Width="20" Height="20" />
+                                <TextBlock Text="Settings" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ListBoxItem>
                     </ListBox>
                 </StackPanel>
             </Border>
@@ -49,6 +56,8 @@
                                    IsVisible="{Binding $parent[UserControl].((local:MainViewModel)DataContext).SelectedIndex, Converter={x:Static local:IndexConverters.IsOne}}" />
                 <myEffects:MyEffectsView DataContext="{Binding MyEffects}"
                                          IsVisible="{Binding $parent[UserControl].((local:MainViewModel)DataContext).SelectedIndex, Converter={x:Static local:IndexConverters.IsTwo}}" />
+                <settings:SettingsView DataContext="{Binding Settings}"
+                                       IsVisible="{Binding $parent[UserControl].((local:MainViewModel)DataContext).SelectedIndex, Converter={x:Static local:IndexConverters.IsThree}}" />
             </Panel>
         </SplitView.Content>
     </SplitView>

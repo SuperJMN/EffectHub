@@ -1,6 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:gallery="clr-namespace:EffectHub.Sections.Gallery"
+             xmlns:settings="clr-namespace:EffectHub.Sections.Settings"
              x:Class="EffectHub.App"
              RequestedThemeVariant="Dark">
 
@@ -14,6 +15,9 @@
     <Application.DataTemplates>
         <DataTemplate DataType="gallery:EffectDetailViewModel">
             <gallery:EffectDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="settings:ApiUrlPromptViewModel">
+            <settings:ApiUrlPromptView />
         </DataTemplate>
     </Application.DataTemplates>
 

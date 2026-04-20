@@ -11,5 +11,6 @@
     <PackageReference Include="ReactiveUI" />
     <PackageReference Include="ReactiveUI.SourceGenerators" />
     <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="Zafiro" />
   </ItemGroup>
 </Project>

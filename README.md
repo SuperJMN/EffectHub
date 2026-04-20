@@ -81,3 +81,51 @@ static MyEffect()
 - [Effector](https://github.com/SuperJMN/Effector) — Skia effect rendering for Avalonia
 - [Zafiro.Avalonia](https://github.com/SuperJMN/Zafiro.Avalonia) ≥ 51.6.3 — PropertyGrid with Color editor
 - [Avalonia](https://avaloniaui.net/) 12
+
+## Separated deployment (API + frontend on different machines)
+
+Backend (`EffectHub.Api`) and frontends (`EffectHub.Browser` WASM, `EffectHub.Desktop`) are independently deployable. Each frontend stores the backend URL in per-platform settings and lets you change it from the **Settings** tab without recompiling.
+
+### Backend
+
+```bash
+dotnet publish src/EffectHub.Api -c Release -o publish/api
+```
+
+Configure allowed origins in `appsettings.json`:
+
+```json
+{
+  "Cors": {
+    "AllowedOrigins": [ "https://effecthub.example.com" ]
+  }
+}
+```
+
+If `Cors:AllowedOrigins` is empty, the API falls back to `AllowAnyOrigin` (convenient for local dev — restrict it in production).
+
+### Frontends
+
+```bash
+# WASM static site
+dotnet publish src/EffectHub.Browser -c Release -o publish/web
+# Desktop
+dotnet publish src/EffectHub.Desktop -c Release -o publish/desktop
+```
+
+URL resolution at startup:
+
+1. `EFFECTHUB_API_URL` env var (Desktop only).
+2. `ApiBaseUrl` from persisted settings (`Zafiro.Settings.ISettings<EffectHubSettings>`):
+   - **Desktop / Mobile** → `IsolatedStorageSettingsStore` (`System.IO.IsolatedStorage`).
+   - **WASM** → `LocalStorageSettingsStore` (`window.localStorage` via `[JSImport]`).
+3. Default `http://localhost:5120` (Desktop only). On WASM the URL must be configured.
+
+Open the **Settings** tab in the app to change the API URL and **Test connection** at any time. Changes apply hot — no restart.
+
+### Mixed-content / HTTPS
+
+If the WASM site is served over `https://`, the browser blocks plain `http://` API calls (mixed content). Either:
+
+- Serve the API over HTTPS (recommended in production), or
+- Serve both the WASM site and the API over plain HTTP during local testing.

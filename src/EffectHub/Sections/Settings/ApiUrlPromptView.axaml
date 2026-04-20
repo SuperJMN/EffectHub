@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:settings="clr-namespace:EffectHub.Sections.Settings"
+             mc:Ignorable="d"
+             x:Class="EffectHub.Sections.Settings.ApiUrlPromptView"
+             x:DataType="settings:ApiUrlPromptViewModel"
+             Padding="20"
+             Width="460">
+    <StackPanel Spacing="12">
+        <TextBlock TextWrapping="Wrap"
+                   Text="EffectHub needs to know where your backend API lives. Enter the base URL (for example http://localhost:5120 or https://api.example.com)." />
+        <TextBox Theme="{StaticResource EnhancedTextBox}"
+                 Text="{Binding Url, Mode=TwoWay}"
+                 Watermark="https://api.example.com" />
+        <TextBlock Foreground="#B00020"
+                   FontSize="12"
+                   IsVisible="{Binding HasErrors}"
+                   Text="Enter an absolute http(s) URL." />
+    </StackPanel>
+</UserControl>

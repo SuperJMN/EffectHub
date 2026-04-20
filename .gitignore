@@ -6,3 +6,8 @@ obj/
 *.suo
 nupkg/
 artifacts/
+
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal

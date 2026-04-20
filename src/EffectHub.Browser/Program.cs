@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Browser;
 using EffectHub;
+using EffectHub.Browser.Storage;
 using ReactiveUI.Avalonia;
 
 [assembly: SupportedOSPlatform("browser")]
@@ -13,6 +14,7 @@ internal sealed partial class Program
 {
     private static async Task Main(string[] args)
     {
+        App.SettingsStoreOverride = new LocalStorageSettingsStore();
         await BuildAvaloniaApp()
             .WithInterFont()
             .UseReactiveUI(_ => { })
